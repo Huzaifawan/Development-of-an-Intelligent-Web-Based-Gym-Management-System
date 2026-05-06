@@ -5,6 +5,9 @@ const helmet = require("helmet");
 const mongoSanitize = require("express-mongo-sanitize");
 const rateLimit = require("express-rate-limit");
 const connectDB = require("./config/db");
+const dns = require("dns");
+
+dns.setServers(["1.1.1.1", "8.8.8.8"]);
 
 // Load env vars FIRST before anything else
 dotenv.config();

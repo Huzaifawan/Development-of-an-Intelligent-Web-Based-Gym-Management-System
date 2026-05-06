@@ -5,6 +5,53 @@ import Loader from "../common/Loader";
 import ErrorMessage from "../common/ErrorMessage";
 import { FaSearch, FaFilter } from "react-icons/fa";
 
+const FALLBACK_TRAINERS = [
+  {
+    _id: "1",
+    name: "Imran Ullah",
+    specialisation: "Fitness & Fat Loss",
+    bio: "Official PCB (Pakistan Cricket Board) certified fitness coach with 8 years of experience. Specialises in functional fitness, fat loss programs, and athletic conditioning. Has trained national-level cricketers and elite athletes.",
+    experience: 8,
+    rating: 4.9,
+    gender: "male",
+    profileImage:
+      "https://images.unsplash.com/photo-1581009146145-b5ef050c2e1e?w=400&h=400&fit=crop",
+  },
+  {
+    _id: "2",
+    name: "Waqas Ahmad",
+    specialisation: "Bodybuilding & Bulking",
+    bio: "Professional competitive bodybuilder with extensive experience in bulking and cutting cycles. Helps clients achieve maximum muscle hypertrophy and contest-ready physiques.",
+    experience: 7,
+    rating: 4.7,
+    gender: "male",
+    profileImage:
+      "https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?w=400&h=400&fit=crop",
+  },
+  {
+    _id: "3",
+    name: "Mukhtiar Ahmad",
+    specialisation: "Bodybuilding",
+    bio: "Former competitive bodybuilder and proud Mr. Peshawar title holder. Brings championship-level expertise to help clients build impressive physiques and achieve their body composition goals.",
+    experience: 6,
+    rating: 4.8,
+    gender: "male",
+    profileImage:
+      "https://images.unsplash.com/photo-1583454110551-21f2fa2afe61?w=400&h=400&fit=crop",
+  },
+  {
+    _id: "4",
+    name: "Fatima Malik",
+    specialisation: "Yoga & Wellness",
+    bio: "Certified female yoga instructor specialising in women's fitness and wellness. Expert in Hatha yoga, Vinyasa flow, flexibility training, and mindfulness meditation. Sessions available for females only.",
+    experience: 5,
+    rating: 4.9,
+    gender: "female",
+    profileImage:
+      "https://images.unsplash.com/photo-1544367567-0f2fcb009e0b?w=400&h=400&fit=crop",
+  },
+];
+
 const TrainersPage = () => {
   const [trainers, setTrainers] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -23,34 +70,8 @@ const TrainersPage = () => {
       setTrainers(response.data.trainers || response.data);
       setError(null);
     } catch (err) {
-      setError(null); // suppress error since fallback data is provided
-      // Fallback data
-      setTrainers([
-        {
-          _id: "1",
-          name: "Imran Ullah",
-          specialisation: "Fitness Training",
-          bio: "Certified fitness trainer at PCB with 5 years of experience in functional fitness and conditioning.",
-          experience: 5,
-          rating: 4.8,
-        },
-        {
-          _id: "2",
-          name: "Waqas Ahmad",
-          specialisation: "Bodybuilding & Bulking",
-          bio: "Professional bodybuilder specialising in bulking programs and muscle hypertrophy training.",
-          experience: 6,
-          rating: 4.6,
-        },
-        {
-          _id: "3",
-          name: "Mukhtiar",
-          specialisation: "Bodybuilding",
-          bio: "Experienced bodybuilder helping clients build muscle mass and reach their body composition goals.",
-          experience: 4,
-          rating: 4.7,
-        },
-      ]);
+      setError(null);
+      setTrainers(FALLBACK_TRAINERS);
     } finally {
       setLoading(false);
     }
@@ -60,7 +81,15 @@ const TrainersPage = () => {
     const matchesSearch =
       trainer.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
       trainer.specialisation.toLowerCase().includes(searchTerm.toLowerCase());
-    return matchesSearch;
+    const matchesFilter =
+      filter === "all" ||
+      (filter === "fitness" &&
+        trainer.specialisation.toLowerCase().includes("fitness")) ||
+      (filter === "bodybuilding" &&
+        trainer.specialisation.toLowerCase().includes("bodybuilding")) ||
+      (filter === "yoga" &&
+        trainer.specialisation.toLowerCase().includes("yoga"));
+    return matchesSearch && matchesFilter;
   });
 
   if (loading) return <Loader />;
@@ -100,17 +129,15 @@ const TrainersPage = () => {
               className="pl-12 pr-8 py-3 bg-card border border-border rounded-xl text-white focus:border-primary focus:outline-none transition-colors appearance-none cursor-pointer"
             >
               <option value="all">All Trainers</option>
-              <option value="strength">Strength Training</option>
-              <option value="cardio">Cardio & Yoga</option>
-              <option value="crossfit">CrossFit</option>
+              <option value="fitness">Fitness & Fat Loss</option>
+              <option value="bodybuilding">Bodybuilding</option>
+              <option value="yoga">Yoga & Wellness</option>
             </select>
           </div>
         </div>
 
-        {/* Error Message */}
         {error && <ErrorMessage message={error} />}
 
-        {/* Trainers Grid */}
         {filteredTrainers.length === 0 ? (
           <div className="text-center py-20">
             <p className="text-gray-400 text-lg">

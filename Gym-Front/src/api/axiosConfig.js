@@ -8,7 +8,7 @@ const axiosInstance = axios.create({
   },
 });
 
-// Request interceptor to add token
+// Request interceptor — auto attach JWT token
 axiosInstance.interceptors.request.use(
   (config) => {
     const token = localStorage.getItem("token");
@@ -17,12 +17,10 @@ axiosInstance.interceptors.request.use(
     }
     return config;
   },
-  (error) => {
-    return Promise.reject(error);
-  },
+  (error) => Promise.reject(error),
 );
 
-// Response interceptor to handle errors
+// Response interceptor — auto logout on 401
 axiosInstance.interceptors.response.use(
   (response) => response,
   (error) => {

@@ -70,7 +70,7 @@ const DashboardPage = () => {
     },
   ];
 
-  const sessions = trainers.slice(0, 3).flatMap(t =>
+  const sessions = trainers.flatMap(t =>
     (t.schedule || []).slice(0, 1).map(s => ({
       id: t._id + s.day,
       trainer: t.name,
@@ -78,7 +78,7 @@ const DashboardPage = () => {
       date: s.day,
       time: s.startTime ? `${s.startTime} – ${s.endTime}` : "—",
     }))
-  ).slice(0, 3);
+  );
 
   return (
     <div className="min-h-screen py-20">

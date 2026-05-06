@@ -10,6 +10,7 @@ import ProgramsPage from "./components/pages/ProgramsPage";
 import LoginPage from "./components/pages/LoginPage";
 import RegisterPage from "./components/pages/RegisterPage";
 import DashboardPage from "./components/pages/DashboardPage";
+import AdminPage from "./components/pages/AdminPage";
 import ChatbotPage from "./components/pages/ChatbotPage";
 
 function App() {
@@ -24,6 +25,7 @@ function App() {
             <Route path="/login" element={<PublicRoute><LoginPage /></PublicRoute>} />
             <Route path="/register" element={<PublicRoute><RegisterPage /></PublicRoute>} />
             <Route path="/dashboard" element={<PrivateRoute><DashboardPage /></PrivateRoute>} />
+            <Route path="/admin" element={<PrivateRoute><AdminPage /></PrivateRoute>} />
           </Routes>
           <ChatbotPage />
         </Layout>

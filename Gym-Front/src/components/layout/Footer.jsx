@@ -91,15 +91,15 @@ const Footer = () => {
             <ul className="space-y-3">
               <li className="flex items-center gap-3 text-gray-400">
                 <FaMapMarkerAlt className="text-primary" />
-                <span>123 Fitness Street, Karachi, Pakistan</span>
+                <span>Shaheen Town University Road</span>
               </li>
               <li className="flex items-center gap-3 text-gray-400">
                 <FaPhone className="text-primary" />
-                <span>+92 300 1234567</span>
+                <span>+92 3459411552</span>
               </li>
               <li className="flex items-center gap-3 text-gray-400">
                 <FaEnvelope className="text-primary" />
-                <span>info@getfit.com</span>
+                <span>getfit4life@gmail.com</span>
               </li>
             </ul>
           </div>

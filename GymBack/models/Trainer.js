@@ -16,17 +16,26 @@ const trainerSchema = new mongoose.Schema(
       {
         day: {
           type: String,
-          enum: ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"],
+          enum: [
+            "Monday",
+            "Tuesday",
+            "Wednesday",
+            "Thursday",
+            "Friday",
+            "Saturday",
+            "Sunday",
+          ],
         },
         startTime: { type: String },
         endTime: { type: String },
         sessionType: { type: String },
       },
     ],
+    gender: { type: String, enum: ["male", "female"], default: "male" },
     isAvailable: { type: Boolean, default: true },
     rating: { type: Number, default: 0, min: 0, max: 5 },
   },
-  { timestamps: true }
+  { timestamps: true },
 );
 
 module.exports = mongoose.model("Trainer", trainerSchema);

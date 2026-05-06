@@ -5,7 +5,7 @@ const Trainer = require("../models/Trainer");
 // @access  Public
 const getAllTrainers = async (req, res, next) => {
   try {
-    const trainers = await Trainer.find({ isAvailable: true });
+    const trainers = await Trainer.find({ isAvailable: { $ne: false } });
     res.json({ success: true, count: trainers.length, trainers });
   } catch (error) {
     next(error);
@@ -45,6 +45,7 @@ const createTrainer = async (req, res, next) => {
       schedule,
       isAvailable,
       rating,
+      gender,
     } = req.body;
 
     // Required field validation
@@ -66,6 +67,7 @@ const createTrainer = async (req, res, next) => {
       schedule,
       isAvailable,
       rating,
+      gender,
     });
     res.status(201).json({ success: true, trainer });
   } catch (error) {
@@ -89,6 +91,7 @@ const updateTrainer = async (req, res, next) => {
       schedule,
       isAvailable,
       rating,
+      gender,
     } = req.body;
 
     const trainer = await Trainer.findByIdAndUpdate(
@@ -103,6 +106,7 @@ const updateTrainer = async (req, res, next) => {
         schedule,
         isAvailable,
         rating,
+        gender,
       },
       { new: true, runValidators: true },
     );

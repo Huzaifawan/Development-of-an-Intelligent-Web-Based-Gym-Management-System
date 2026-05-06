@@ -1,15 +1,51 @@
 import React, { useState } from "react";
-import { FaStar, FaCalendarAlt, FaDumbbell, FaTimes, FaCheck } from "react-icons/fa";
+import {
+  FaStar,
+  FaCalendarAlt,
+  FaDumbbell,
+  FaTimes,
+  FaCheck,
+} from "react-icons/fa";
 import { sessionsApi } from "../../api/sessionsApi";
 
-const TrainerCard = ({ trainer, index }) => {
-  const defaultImages = [
-    "https://images.unsplash.com/photo-1581009146145-b5ef050c2e1e?w=400&h=400&fit=crop",
-    "https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?w=400&h=400&fit=crop",
-    "https://images.unsplash.com/photo-1583454110551-21f2fa2afe61?w=400&h=400&fit=crop",
-    "https://images.unsplash.com/photo-1517836357463-d25dfeac3438?w=400&h=400&fit=crop",
-  ];
+const MALE_IMAGES = [
+  "https://images.unsplash.com/photo-1581009146145-b5ef050c2e1e?w=400&h=400&fit=crop",
+  "https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?w=400&h=400&fit=crop",
+  "https://images.unsplash.com/photo-1583454110551-21f2fa2afe61?w=400&h=400&fit=crop",
+  "https://images.unsplash.com/photo-1517836357463-d25dfeac3438?w=400&h=400&fit=crop",
+];
 
+const FEMALE_IMAGES = [
+  "https://images.unsplash.com/photo-1544367567-0f2fcb009e0b?w=400&h=400&fit=crop",
+  "https://images.unsplash.com/photo-1518611012118-696072aa579a?w=400&h=400&fit=crop",
+  "https://images.unsplash.com/photo-1571019614242-c5c5dee9f50b?w=400&h=400&fit=crop",
+  "https://images.unsplash.com/photo-1506629082955-511b1aa562c8?w=400&h=400&fit=crop",
+];
+
+const FEMALE_NAMES = [
+  "fatima",
+  "sara",
+  "ayesha",
+  "maria",
+  "zara",
+  "nadia",
+  "hina",
+  "sana",
+  "amna",
+  "rabia",
+];
+
+const getTrainerImage = (trainer, index) => {
+  if (trainer.profileImage) return trainer.profileImage;
+  const isFemale =
+    trainer.gender === "female" ||
+    (trainer.name &&
+      FEMALE_NAMES.some((n) => trainer.name.toLowerCase().includes(n)));
+  const images = isFemale ? FEMALE_IMAGES : MALE_IMAGES;
+  return images[index % images.length];
+};
+
+const TrainerCard = ({ trainer, index }) => {
   const [showModal, setShowModal] = useState(false);
   const [loading, setLoading] = useState(false);
   const [success, setSuccess] = useState(false);
@@ -22,9 +58,8 @@ const TrainerCard = ({ trainer, index }) => {
     notes: "",
   });
 
-  const handleChange = (e) => {
+  const handleChange = (e) =>
     setForm({ ...form, [e.target.name]: e.target.value });
-  };
 
   const handleBook = async () => {
     setError(null);
@@ -48,8 +83,9 @@ const TrainerCard = ({ trainer, index }) => {
       });
       setSuccess(true);
     } catch (err) {
-      const msg = err?.response?.data?.message || "Booking failed. Please try again.";
-      setError(msg);
+      setError(
+        err?.response?.data?.message || "Booking failed. Please try again.",
+      );
     } finally {
       setLoading(false);
     }
@@ -69,13 +105,14 @@ const TrainerCard = ({ trainer, index }) => {
   };
 
   const today = new Date().toISOString().split("T")[0];
+  const trainerImage = getTrainerImage(trainer, index);
 
   return (
     <>
       <div className="group relative glass-card overflow-hidden transition-all duration-500 hover:-translate-y-2 hover:shadow-2xl hover:shadow-primary/10">
         <div className="relative overflow-hidden h-64">
           <img
-            src={trainer.image || defaultImages[index % defaultImages.length]}
+            src={trainerImage}
             alt={trainer.name}
             className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
           />
@@ -84,19 +121,23 @@ const TrainerCard = ({ trainer, index }) => {
             <p className="text-gray-300 text-sm">{trainer.bio}</p>
           </div>
         </div>
-
         <div className="p-6">
           <div className="flex justify-between items-start mb-3">
             <div>
-              <h3 className="text-xl font-bold text-white mb-1">{trainer.name}</h3>
-              <p className="text-primary text-sm font-medium">{trainer.specialisation}</p>
+              <h3 className="text-xl font-bold text-white mb-1">
+                {trainer.name}
+              </h3>
+              <p className="text-primary text-sm font-medium">
+                {trainer.specialisation}
+              </p>
             </div>
             <div className="flex items-center gap-1 bg-primary/10 px-2 py-1 rounded-lg">
               <FaStar className="text-yellow-400 text-sm" />
-              <span className="text-white text-sm font-semibold">{trainer.rating || 4.8}</span>
+              <span className="text-white text-sm font-semibold">
+                {trainer.rating || 4.8}
+              </span>
             </div>
           </div>
-
           <div className="flex items-center gap-4 text-gray-400 text-sm mb-4">
             <div className="flex items-center gap-1">
               <FaDumbbell className="text-primary" />
@@ -107,7 +148,6 @@ const TrainerCard = ({ trainer, index }) => {
               <span>Available Mon-Sat</span>
             </div>
           </div>
-
           <button
             onClick={() => setShowModal(true)}
             className="w-full mt-4 px-4 py-2 rounded-xl bg-primary text-white hover:bg-primary/80 hover:scale-105 transition-all duration-300 font-medium"
@@ -126,7 +166,6 @@ const TrainerCard = ({ trainer, index }) => {
             >
               <FaTimes size={18} />
             </button>
-
             {success ? (
               <div className="text-center py-6">
                 <div className="flex justify-center mb-4">
@@ -134,9 +173,15 @@ const TrainerCard = ({ trainer, index }) => {
                     <FaCheck className="text-green-400 text-2xl" />
                   </div>
                 </div>
-                <h3 className="text-xl font-bold text-white mb-2">Session Booked!</h3>
+                <h3 className="text-xl font-bold text-white mb-2">
+                  Session Booked!
+                </h3>
                 <p className="text-gray-400 mb-2">
-                  Your session with <span className="text-primary font-semibold">{trainer.name}</span> has been confirmed.
+                  Your session with{" "}
+                  <span className="text-primary font-semibold">
+                    {trainer.name}
+                  </span>{" "}
+                  has been confirmed.
                 </p>
                 <p className="text-gray-500 text-sm mb-6">
                   {form.date} &bull; {form.startTime} – {form.endTime}
@@ -150,17 +195,21 @@ const TrainerCard = ({ trainer, index }) => {
               </div>
             ) : (
               <>
-                <h3 className="text-xl font-bold text-white mb-1">Book a Session</h3>
+                <h3 className="text-xl font-bold text-white mb-1">
+                  Book a Session
+                </h3>
                 <p className="text-gray-400 text-sm mb-5">
-                  with <span className="text-primary font-semibold">{trainer.name}</span> — {trainer.specialisation}
+                  with{" "}
+                  <span className="text-primary font-semibold">
+                    {trainer.name}
+                  </span>{" "}
+                  — {trainer.specialisation}
                 </p>
-
                 {error && (
                   <div className="mb-4 px-4 py-3 bg-red-500/10 border border-red-500/30 rounded-xl text-red-400 text-sm">
                     {error}
                   </div>
                 )}
-
                 <div className="space-y-4">
                   <div>
                     <label className="block text-gray-300 text-sm mb-1">
@@ -175,7 +224,6 @@ const TrainerCard = ({ trainer, index }) => {
                       className="w-full px-4 py-2 bg-gray-800 border border-gray-700 rounded-xl text-white focus:border-primary focus:outline-none transition-colors"
                     />
                   </div>
-
                   <div className="flex gap-3">
                     <div className="flex-1">
                       <label className="block text-gray-300 text-sm mb-1">
@@ -202,9 +250,10 @@ const TrainerCard = ({ trainer, index }) => {
                       />
                     </div>
                   </div>
-
                   <div>
-                    <label className="block text-gray-300 text-sm mb-1">Session Type</label>
+                    <label className="block text-gray-300 text-sm mb-1">
+                      Session Type
+                    </label>
                     <input
                       type="text"
                       name="sessionType"
@@ -214,9 +263,10 @@ const TrainerCard = ({ trainer, index }) => {
                       className="w-full px-4 py-2 bg-gray-800 border border-gray-700 rounded-xl text-white placeholder-gray-600 focus:border-primary focus:outline-none transition-colors"
                     />
                   </div>
-
                   <div>
-                    <label className="block text-gray-300 text-sm mb-1">Notes (optional)</label>
+                    <label className="block text-gray-300 text-sm mb-1">
+                      Notes (optional)
+                    </label>
                     <textarea
                       name="notes"
                       value={form.notes}
@@ -227,7 +277,6 @@ const TrainerCard = ({ trainer, index }) => {
                     />
                   </div>
                 </div>
-
                 <div className="flex gap-3 mt-6">
                   <button
                     onClick={closeModal}
